@@ -1,10 +1,13 @@
-var webpackMerge = require('webpack-merge');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var commonConfig = require('./webpack.common.js');
-var helpers = require('./helpers');
+const {
+  merge
+} = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const commonConfig = require('./webpack.common.js');
+const helpers = require('./helpers');
 
-module.exports = webpackMerge(commonConfig, {
-  devtool: 'cheap-module-eval-source-map',
+module.exports = merge(commonConfig, {
+  mode: 'development',
+  devtool: 'cheap-source-map',
 
   output: {
     path: helpers.root('dist'),
@@ -14,11 +17,12 @@ module.exports = webpackMerge(commonConfig, {
   },
 
   plugins: [
-    new MiniCssExtractPlugin({filename:'[name].css'})
+    new MiniCssExtractPlugin({
+      filename: '[name].css'
+    })
   ],
 
   devServer: {
     historyApiFallback: true,
-    stats: 'minimal'
   }
 });

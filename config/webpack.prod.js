@@ -1,13 +1,21 @@
-var webpack = require('webpack');
-var webpackMerge = require('webpack-merge');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var commonConfig = require('./webpack.common.js');
-var helpers = require('./helpers');
+const webpack = require('webpack');
+const {
+  merge
+} = require('webpack-merge');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const TerserPlugin = require('terser-webpack-plugin');
+const commonConfig = require('./webpack.common.js');
+const helpers = require('./helpers');
 
 const ENV = process.env.NODE_ENV = process.env.ENV = 'production';
 
-module.exports = webpackMerge(commonConfig, {
+module.exports = merge(commonConfig, {
   devtool: 'source-map',
+
+  optimization: {
+    minimize: true,
+    minimizer: [new TerserPlugin()],
+  },
 
   output: {
     path: helpers.root('dist'),
@@ -18,12 +26,9 @@ module.exports = webpackMerge(commonConfig, {
 
   plugins: [
     new webpack.NoEmitOnErrorsPlugin(),
-    new webpack.optimize.UglifyJsPlugin({ // https://github.com/angular/angular/issues/10618
-      mangle: {
-        keep_fnames: true
-      }
+    new MiniCssExtractPlugin({
+      filename: '[name].[hash].css'
     }),
-    new MiniCssExtractPlugin({filename:'[name].[hash].css'}),
     new webpack.DefinePlugin({
       'process.env': {
         'ENV': JSON.stringify(ENV)

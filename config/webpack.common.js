@@ -1,7 +1,7 @@
-var webpack = require('webpack');
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var MiniCssExtractPlugin = require('mini-css-extract-plugin');
-var helpers = require('./helpers');
+const webpack = require('webpack');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
+const helpers = require('./helpers');
 
 module.exports = {
   entry: {
@@ -15,15 +15,14 @@ module.exports = {
   },
 
   module: {
-    rules: [
-      {
+    rules: [{
         test: /\.ts$/,
-        loaders: [
-          {
-            loader: 'awesome-typescript-loader',
-            options: { configFileName: helpers.root('src', 'tsconfig.json') }
-          } , 'angular2-template-loader'
-        ]
+        use: [{
+          loader: 'awesome-typescript-loader',
+          options: {
+            configFileName: helpers.root('src', 'tsconfig.json')
+          }
+        }, 'angular2-template-loader']
       },
       {
         test: /\.html$/,
@@ -31,17 +30,16 @@ module.exports = {
       },
       {
         test: /\.(png|jpe?g|gif|svg|woff|woff2|ttf|eot|ico)$/,
-        loader: 'file-loader?name=assets/[name].[hash].[ext]'
+        loader: 'file-loader',
+        options: {
+          name: 'assets/[name].[hash].[ext]',
+        }
       },
       {
         test: /\.css$/,
         exclude: helpers.root('src', 'app'),
-        use: [
-          {
+        use: [{
             loader: MiniCssExtractPlugin.loader,
-            options: {
-              hmr: process.env.NODE_ENV === 'development',
-            },
           },
           'css-loader',
         ],
